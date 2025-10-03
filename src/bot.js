@@ -1,8 +1,8 @@
-const { triggers, botUsername } = require('./config');
-const { postComment } = require('./utils/githubAPI');
+import { triggers, botUsername } from './config.js';
+import { postComment } from './utils/githubAPI.js'; 
 
 // This function receives the GitHub comment payload from /webhook
-async function handleComment(payload) {
+export async function handleComment(payload) {
   try {
     const commentBody = payload.comment.body;
     const sender = payload.comment.user.login;
@@ -58,4 +58,4 @@ async function handleComment(payload) {
   }
 }
 
-module.exports = { handleComment };
+// module.exports = { handleComment };

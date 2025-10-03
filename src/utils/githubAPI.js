@@ -1,9 +1,10 @@
-const { Octokit } = require('@octokit/rest');
-require('dotenv').config();
+import dotenv from 'dotenv'; 
+dotenv.config();
+import { Octokit } from '@octokit/rest'; 
 
-const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-async function postComment(owner, repo, issue_number, body) {
+export async function postComment(owner, repo, issue_number, body) {
   return octokit.issues.createComment({
     owner,
     repo,
@@ -12,4 +13,4 @@ async function postComment(owner, repo, issue_number, body) {
   });
 }
 
-module.exports = { postComment, octokit };
+

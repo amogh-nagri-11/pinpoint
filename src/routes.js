@@ -1,7 +1,8 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const { handleComment } = require('./bot');
-const storage = require('./commands/storage'); // Person B will implement storage functions
+import express from 'express'; 
+import bodyParser from 'body-parser';
+import { handleComment } from './bot.js';
+// import storage from './commands/storage'; // Person B will implement storage functions
+import { getAllPinpoints, addPinpoint, editPinpoint, deletePinpoint, getPinpoint, listPinpoint} from './commands/handlers/index.js';
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ router.put('/pinpoints/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { value } = req.body;
-    const result = await storage.updatePinpoint(id, value);
+    const result = await storage.editPinpoint(id, value);
     res.status(200).json({ message: '✅ Pinpoint updated successfully.', data: result });
   } catch (err) {
     console.error('Error in PUT /pinpoints/:id:', err.message);
@@ -84,7 +85,7 @@ router.delete('/pinpoints/:id', async (req, res) => {
 router.get('/pinpoints/search', async (req, res) => {
   try {
     const { keyword } = req.query;
-    const results = await storage.searchPinpoints(keyword);
+    const results = await storage.getPinpoints(keyword);
     if (results.length === 0) {
       res.status(404).json({ results: [], message: `❌ No pinpoint found for keyword: ${keyword}` });
     } else {
@@ -96,4 +97,4 @@ router.get('/pinpoints/search', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

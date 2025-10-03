@@ -2,11 +2,14 @@ import { savePinpoints, loadPinpoints } from "../storage/pinpointStore.js";
 
 import { v4 as uuidv4 } from 'uuid'; 
 
-export function addPinpoint(content) {
+export function addPinpoint({ content, value, user, source }) {
     const pinpoints = loadPinpoints(); 
     const newPinpoint = {
         id : uuidv4(),
-        content, 
+        content,
+        value, 
+        user, 
+        source,
         createdAt: new Date().toISOString(), 
         updatedAt: new Date().toISOString()
     }; 

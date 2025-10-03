@@ -16,8 +16,9 @@ console.log("📋 List:", listed);
 // --- 3. Get the first Pinpoint ---
 if (listed.data && listed.data.length > 0) {
     const firstId = listed.data[0].id;
+    const text = 'from'; 
 
-    const single = getPinpoint(firstId);
+    const single = getPinpoint(text);
     console.log("🔍 Fetched single:", single);
 
     // --- 4. Edit that Pinpoint ---
