@@ -7,11 +7,11 @@ function loadPinpoints() {
     if (!fs.existsSync(DATA_FILE)) return []; 
 
     const data = fs.readFileSync(DATA_FILE, 'utf-8'); 
-    return json.parse(data || '[]'); 
+    return JSON.parse(data || '[]'); 
 }
 
 function savePinpoints(pinpoints) { 
-    fs.writeFileSync(DATA_FILE, json.stringify(pinpoints, null, 2)); 
+    fs.writeFileSync(DATA_FILE, JSON.stringify(pinpoints, null, 2)); 
 }
 
 export { loadPinpoints, savePinpoints };

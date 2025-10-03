@@ -1,8 +1,9 @@
-import { savePinpoints, loadPinpoints } from "../commands/pinpointStore";
+import { savePinpoints, loadPinpoints } from "../storage/pinpointStore.js";
+
 import { v4 as uuidv4 } from 'uuid'; 
 
 export function addPinpoint(content) {
-    const pinpoint = loadPinpoints(); 
+    const pinpoints = loadPinpoints(); 
     const newPinpoint = {
         id : uuidv4(),
         content, 

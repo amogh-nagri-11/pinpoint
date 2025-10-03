@@ -1,18 +1,22 @@
 [
   {
-    "id": "p1",
-    "keyword": "staging url",
-    "value": "src/app/urls",
-    "user": "alice",
-    "source": "PR #42",
-    "timestamp": "2025-10-01T18:36:26.305Z"
-  },
-  {
     "id": "p2",
     "keyword": "redis config",
     "value": "src/config/redis.js",
     "user": "bob",
     "source": "PR #50",
     "timestamp": "2025-10-01T18:38:06.857Z"
+  },
+  {
+    "id": "911dd36d-a459-46a4-ae11-8472a34e1487",
+    "content": "Test note from Pinpoint project",
+    "createdAt": "2025-10-03T07:58:47.671Z",
+    "updatedAt": "2025-10-03T07:58:47.684Z"
+  },
+  {
+    "id": "ea42a46f-0218-4586-bf26-47e5c04c47a7",
+    "content": "Test note from Pinpoint project",
+    "createdAt": "2025-10-03T07:59:39.019Z",
+    "updatedAt": "2025-10-03T07:59:39.020Z"
   }
 ]

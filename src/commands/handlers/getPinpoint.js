@@ -1,4 +1,5 @@
-import { loadPinpoints } from "../commands/pinpointStore";
+import { savePinpoints, loadPinpoints } from "../storage/pinpointStore.js";
+
 
 export function getPinpoint(id) {
     const pinpoints = loadPinpoints();
