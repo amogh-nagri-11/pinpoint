@@ -1,0 +1,27 @@
+name: Pinpoint GitHub Bot
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  handle-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Pinpoint bot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node src/server.js

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "p1",
+    "keyword": "staging url",
+    "value": "src/app/urls",
+    "user": "alice",
+    "source": "PR #42",
+    "timestamp": "2025-10-01T18:36:26.305Z"
+  },
+  {
+    "id": "p2",
+    "keyword": "redis config",
+    "value": "src/config/redis.js",
+    "user": "bob",
+    "source": "PR #50",
+    "timestamp": "2025-10-01T18:38:06.857Z"
+  }
+]
