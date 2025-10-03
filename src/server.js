@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 3000;
 // Mount routes
 app.use('/', routes);
 
+app.get('/', (req, res) => {
+  res.send("Pinpoint api running"); 
+})
+
 // Start server
 app.listen(PORT, () => {
   console.log(`✅ Pinpoint server running on http://localhost:${PORT}`);

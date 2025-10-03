@@ -28,7 +28,7 @@ router.post('/webhook', async (req, res) => {
 // ------------------------
 router.get('/pinpoints', async (req, res) => {
   try {
-    const pinpoints = await storage.getAllPinpoints();
+    const pinpoints = await getAllPinpoints();
     res.status(200).json(pinpoints);
   } catch (err) {
     console.error('Error in GET /pinpoints:', err.message);
@@ -42,7 +42,7 @@ router.get('/pinpoints', async (req, res) => {
 router.post('/pinpoints', async (req, res) => {
   try {
     const { keyword, value, user, source } = req.body;
-    const result = await storage.addPinpoint({ keyword, value, user, source });
+    const result = await addPinpoint({ keyword, value, user, source });
     res.status(201).json({ message: '✅ Pinpoint added successfully.', data: result });
   } catch (err) {
     console.error('Error in POST /pinpoints:', err.message);
@@ -57,7 +57,7 @@ router.put('/pinpoints/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { value } = req.body;
-    const result = await storage.editPinpoint(id, value);
+    const result = await editPinpoint(id, value);
     res.status(200).json({ message: '✅ Pinpoint updated successfully.', data: result });
   } catch (err) {
     console.error('Error in PUT /pinpoints/:id:', err.message);
@@ -71,7 +71,7 @@ router.put('/pinpoints/:id', async (req, res) => {
 router.delete('/pinpoints/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedId = await storage.deletePinpoint(id);
+    const deletedId = await deletePinpoint(id);
     res.status(200).json({ message: '🗑️ Pinpoint deleted successfully.', deletedId });
   } catch (err) {
     console.error('Error in DELETE /pinpoints/:id:', err.message);
@@ -85,7 +85,7 @@ router.delete('/pinpoints/:id', async (req, res) => {
 router.get('/pinpoints/search', async (req, res) => {
   try {
     const { keyword } = req.query;
-    const results = await storage.getPinpoints(keyword);
+    const results = await getPinpoints(keyword);
     if (results.length === 0) {
       res.status(404).json({ results: [], message: `❌ No pinpoint found for keyword: ${keyword}` });
     } else {
