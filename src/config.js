@@ -1,4 +1,4 @@
-export const   botUsername = 'pinpoint'; 
+export const   botUsername = 'pinpoint-AI'; 
 
 export const  triggers = {
     remember: 'remember:',
