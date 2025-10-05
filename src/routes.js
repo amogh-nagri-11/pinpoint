@@ -7,7 +7,10 @@ import { getAllPinpoints, addPinpoint, editPinpoint, deletePinpoint, getPinpoint
 const router = express.Router();
 
 // Middleware to parse JSON
-router.use(bodyParser.json());
+//router.use(bodyParser.json());
+router.use(express.json({ limit: '10mb' }));
+router.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
 
 // ------------------------
 // Webhook endpoint from GitHub

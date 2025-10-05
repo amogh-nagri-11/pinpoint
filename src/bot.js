@@ -1,5 +1,28 @@
 import { triggers, botUsername } from './config.js';
-import { postComment } from './utils/githubAPI.js'; 
+import { postComment } from './utils/githubAPI.js';
+import { 
+  addPinpoint, 
+  editPinpoint, 
+  deletePinpoint, 
+  getPinpoint, 
+  listPinpoint, 
+  getAllPinpoints 
+} from './commands/handlers/index.js';
+
+// Acceptable delimiters for keyword/value
+const delimiters = ['→', ':', 'is', '='];
+
+function parseKeywordValue(text) {
+  for (const delim of delimiters) {
+    if (text.includes(delim)) {
+      const [keyword, ...rest] = text.split(delim);
+      const value = rest.join(delim).trim();
+      return { keyword: keyword.trim(), value };
+    }
+  }
+  // If no delimiter found, treat whole text as keyword, empty value
+  return { keyword: text.trim(), value: '' };
+}
 
 // This function receives the GitHub comment payload from /webhook
 export async function handleComment(payload) {
@@ -15,39 +38,31 @@ export async function handleComment(payload) {
 
     let commandText = commentBody.split(`@${botUsername}`)[1].trim();
 
-    // Determine command type
     if (commandText.startsWith(triggers.remember)) {
-      // Person B handles addPinpoint
-      const addPinpoint = require('./commands/handlers/addPinpoint');
-      const result = await addPinpoint(commandText.replace(triggers.remember, '').trim(), sender, `PR #${issue_number}`);
-      await postComment(owner, repo, issue_number, `✅ Added pinpoint: "${result.keyword}" → "${result.value}" (by ${sender}, in PR #${issue_number})`);
+      const { keyword, value } = parseKeywordValue(commandText.replace(triggers.remember, '').trim());
+      const result = await addPinpoint({ content: keyword, value, user: sender, source: `PR #${issue_number}` });
+      await postComment(owner, repo, issue_number, `✅ Added pinpoint: "${keyword}" → "${value}" (by ${sender}, in PR #${issue_number})`);
     }
-
     else if (commandText.startsWith(triggers.edit)) {
-      const editPinpoint = require('./commands/handlers/editPinpoint');
-      const result = await editPinpoint(commandText.replace(triggers.edit, '').trim());
-      await postComment(owner, repo, issue_number, `✅ Edited pinpoint: "${result.keyword}" → "${result.value}"`);
+      const { keyword, value } = parseKeywordValue(commandText.replace(triggers.edit, '').trim());
+      const result = await editPinpoint(keyword, value);
+      await postComment(owner, repo, issue_number, `✅ Edited pinpoint: "${keyword}" → "${value}"`);
     }
-
     else if (commandText.startsWith(triggers.delete)) {
-      const deletePinpoint = require('./commands/handlers/deletePinpoint');
-      const result = await deletePinpoint(commandText.replace(triggers.delete, '').trim());
-      await postComment(owner, repo, issue_number, `🗑️ Deleted pinpoint with ID: ${result.id}`);
+      const { keyword } = parseKeywordValue(commandText.replace(triggers.delete, '').trim());
+      const result = await deletePinpoint(keyword);
+      await postComment(owner, repo, issue_number, `🗑️ Deleted pinpoint with ID/Keyword: "${keyword}"`);
     }
-
     else if (commandText === triggers.list) {
-      const listPinpoints = require('./commands/handlers/listPinpoints');
-      const list = await listPinpoints();
-      const listText = list.map(p => `• ${p.keyword} → ${p.value} (by ${p.user}, in ${p.source})`).join('\n');
+      const list = await listPinpoint();
+      const listText = list.data.map(p => `• ${p.content} → ${p.value} (by ${p.user}, in ${p.source})`).join('\n');
       await postComment(owner, repo, issue_number, listText || 'No pinpoints found.');
     }
-
     else {
-      // Ask command
-      const askPinpoint = require('./commands/handlers/getPinpoint');
-      const result = await askPinpoint(commandText);
-      if (result) {
-        await postComment(owner, repo, issue_number, `🔍 ${result.keyword} → ${result.value} (by ${result.user}, in ${result.source})`);
+      const result = await getPinpoint(commandText.trim());
+      if (result.success && result.data.length > 0) {
+        const r = result.data[0];
+        await postComment(owner, repo, issue_number, `🔍 ${r.content} → ${r.value} (by ${r.user}, in ${r.source})`);
       } else {
         await postComment(owner, repo, issue_number, `❌ No pinpoint found for keyword: ${commandText}`);
       }
@@ -57,5 +72,3 @@ export async function handleComment(payload) {
     console.error('Error in handleComment:', err.message);
   }
 }
-
-// module.exports = { handleComment };
