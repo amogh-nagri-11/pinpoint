@@ -9,6 +9,8 @@ import {
   getAllPinpoints 
 } from './commands/handlers/index.js';
 
+import { interpretCommand } from './utils/groq.js';
+
 // Acceptable delimiters for keyword/value
 const delimiters = ['→', ':', 'is', '='];
 
@@ -24,19 +26,41 @@ function parseKeywordValue(text) {
   return { keyword: text.trim(), value: '' };
 }
 
+console.log('parseKeywordValue');
+
 // This function receives the GitHub comment payload from /webhook
 export async function handleComment(payload) {
+  console.log('handleComment');
   try {
-    const commentBody = payload.comment.body;
-    const sender = payload.comment.user.login;
-    const issue_number = payload.issue.number;
-    const repo = payload.repository.name;
-    const owner = payload.repository.full_name.split('/')[0];
+    const event = typeof payload.payload === 'string'
+      ? JSON.parse(payload.payload)
+      : payload;
+    const commentBody = event.comment?.body;
+    if (!commentBody) { 
+      console.log("no comment body found in this event");
+      return;
+    }
+    console.log(commentBody);
+    const sender = event.comment.user.login;
+    const issue_number = event.issue.number;
+    const repo = event.repository.name;
+    const owner = event.repository.full_name.split('/')[0];
 
     // Check if comment mentions the bot
     if (!commentBody.includes(`@${botUsername}`)) return;
 
+    console.log(`comment detected: ${commentBody}`)
     let commandText = commentBody.split(`@${botUsername}`)[1].trim();
+
+    // Let Groq interpret natural language into a structured command
+    if (
+      !commandText.startsWith(triggers.remember) &&
+      !commandText.startsWith(triggers.edit) &&
+      !commandText.startsWith(triggers.delete) &&
+      commandText !== triggers.list
+    ) {
+      commandText = await interpretCommand(commandText);
+    }
 
     if (commandText.startsWith(triggers.remember)) {
       const { keyword, value } = parseKeywordValue(commandText.replace(triggers.remember, '').trim());
